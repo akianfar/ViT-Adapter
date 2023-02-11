@@ -5,9 +5,10 @@ from mmseg.datasets.custom import CustomDataset
 class MyDataset(CustomDataset):
     """My dataset.
     """
+    # 16 Types
     CLASSES = ('WATER', 'ASPHALT', 'GRASS', 'HUMAN', 'ANIMAL', 'HIGH_VEGETATION', 
                'GROUND_VEHICLE', 'FAÇADE', 'WIRE', 'GARDEN_FURNITURE', 'CONCRETE', 
-               'ROOF', 'GRAVEL', 'SOIL', 'PRIMEAIR_PATTERN', 'SNOW')
+               'ROOF', 'GRAVEL', 'SOIL', 'PRIMEAIR_PATTERN', 'SNOW') 
 
     PALETTE = [[165, 42, 42], [0, 192, 0], [196, 196, 196], [190, 153, 153],
                [180, 165, 180], [90, 120, 150], [
