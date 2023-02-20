@@ -1,10 +1,10 @@
-num_things_classes = 100
-num_stuff_classes = 50
-num_classes = 150
+num_things_classes = 8
+num_stuff_classes = 11
+num_classes = 19
 norm_cfg = dict(type='SyncBN', requires_grad=True)
 model = dict(
-    type='EncoderDecoderMask2Former',
-    pretrained='pretrained/beitv2_large_patch16_224_pt1k_ft21k.pth',
+    type='EncoderDecoderMask2FormerAug',
+    pretrained='pretrained/beit_large_patch16_224_pt22k_ft22k.pth',
     backbone=dict(
         type='BEiTAdapter',
         patch_size=16,
@@ -31,9 +31,9 @@ model = dict(
         feat_channels=1024,
         out_channels=1024,
         in_index=[0, 1, 2, 3],
-        num_things_classes=100,
-        num_stuff_classes=50,
-        num_queries=200,
+        num_things_classes=8,
+        num_stuff_classes=11,
+        num_queries=100,
         num_transformer_feat_level=3,
         pixel_decoder=dict(
             type='MSDeformAttnPixelDecoder',
@@ -106,18 +106,7 @@ model = dict(
             reduction='mean',
             class_weight=[
                 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.1
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.1
             ]),
         loss_mask=dict(
             type='CrossEntropyLoss',
@@ -155,15 +144,15 @@ model = dict(
         crop_size=(896, 896),
         stride=(512, 512)),
     init_cfg=None)
-dataset_type = 'ADE20KDataset'
-data_root = 'data/ade/ADEChallengeData2016'
+dataset_type = 'MyDataset'
+data_root = '/root/autodl-tmp/data'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 crop_size = (896, 896)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', reduce_zero_label=True),
-    dict(type='Resize', img_scale=(3584, 896), ratio_range=(0.5, 2.0)),
+    dict(type='LoadAnnotations'),
+    dict(type='Resize', img_scale=(2048, 1024), ratio_range=(0.5, 2.0)),
     dict(type='RandomCrop', crop_size=(896, 896), cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5),
     dict(type='PhotoMetricDistortion'),
@@ -183,11 +172,15 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(3584, 896),
+        img_scale=(2048, 1024),
+        img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
         flip=True,
         transforms=[
-            dict(type='Resize', keep_ratio=True),
-            dict(type='ResizeToMultiple', size_divisor=32),
+            dict(
+                type='SETR_Resize',
+                keep_ratio=True,
+                crop_size=(896, 896),
+                setr_multi_scale=True),
             dict(type='RandomFlip'),
             dict(
                 type='Normalize',
@@ -199,17 +192,18 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    samples_per_gpu=1,
-    workers_per_gpu=4,
+    samples_per_gpu=2,
+    workers_per_gpu=1,
     train=dict(
-        type='ADE20KDataset',
-        data_root='data/ade/ADEChallengeData2016',
-        img_dir='images/training',
-        ann_dir='annotations/training',
+        type='MyDataset',
+        data_root='/root/autodl-tmp/data',
+        img_dir='images/train',
+        ann_dir='annotations/train',
         pipeline=[
             dict(type='LoadImageFromFile'),
-            dict(type='LoadAnnotations', reduce_zero_label=True),
-            dict(type='Resize', img_scale=(3584, 896), ratio_range=(0.5, 2.0)),
+            dict(type='LoadAnnotations'),
+            dict(
+                type='Resize', img_scale=(2048, 1024), ratio_range=(0.5, 2.0)),
             dict(type='RandomCrop', crop_size=(896, 896), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5),
             dict(type='PhotoMetricDistortion'),
@@ -226,19 +220,23 @@ data = dict(
                 keys=['img', 'gt_semantic_seg', 'gt_masks', 'gt_labels'])
         ]),
     val=dict(
-        type='ADE20KDataset',
-        data_root='data/ade/ADEChallengeData2016',
-        img_dir='images/validation',
-        ann_dir='annotations/validation',
+        type='MyDataset',
+        data_root='/root/autodl-tmp/data',
+        img_dir='images/val',
+        ann_dir='annotations/val',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(3584, 896),
+                img_scale=(2048, 1024),
+                img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
                 flip=True,
                 transforms=[
-                    dict(type='Resize', keep_ratio=True),
-                    dict(type='ResizeToMultiple', size_divisor=32),
+                    dict(
+                        type='SETR_Resize',
+                        keep_ratio=True,
+                        crop_size=(896, 896),
+                        setr_multi_scale=True),
                     dict(type='RandomFlip'),
                     dict(
                         type='Normalize',
@@ -250,19 +248,23 @@ data = dict(
                 ])
         ]),
     test=dict(
-        type='ADE20KDataset',
-        data_root='data/ade/ADEChallengeData2016',
-        img_dir='images/validation',
-        ann_dir='annotations/validation',
+        type='MyDataset',
+        data_root='/root/autodl-tmp/data',
+        img_dir='images/val',
+        ann_dir='annotations/val',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(3584, 896),
+                img_scale=(2048, 1024),
+                img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
                 flip=True,
                 transforms=[
-                    dict(type='Resize', keep_ratio=True),
-                    dict(type='ResizeToMultiple', size_divisor=32),
+                    dict(
+                        type='SETR_Resize',
+                        keep_ratio=True,
+                        crop_size=(896, 896),
+                        setr_multi_scale=True),
                     dict(type='RandomFlip'),
                     dict(
                         type='Normalize',
@@ -277,7 +279,7 @@ log_config = dict(
     interval=50, hooks=[dict(type='TextLoggerHook', by_epoch=False)])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-load_from = 'pretrained/mask2former_beitv2_adapter_large_896_80k_cocostuff164k.pth'
+load_from = 'pretrained/mask2former_beit_adapter_large_896_80k_cityscapes.pth.tar'
 resume_from = None
 workflow = [('train', 1)]
 cudnn_benchmark = True
@@ -298,10 +300,9 @@ lr_config = dict(
     min_lr=0.0,
     by_epoch=False)
 runner = dict(type='IterBasedRunner', max_iters=80000)
-checkpoint_config = dict(by_epoch=False, interval=1000, max_keep_ckpts=1)
-evaluation = dict(
-    interval=8000, metric='mIoU', pre_eval=True, save_best='mIoU')
-pretrained = 'pretrained/beitv2_large_patch16_224_pt1k_ft21k.pth'
-work_dir = './work_dirs/mask2former_beitv2_adapter_large_896_80k_ade20k_ss'
+checkpoint_config = dict(by_epoch=False, interval=50, max_keep_ckpts=1)
+evaluation = dict(interval=50, metric='mIoU', pre_eval=True, save_best='mIoU')
+pretrained = 'pretrained/beit_large_patch16_224_pt22k_ft22k.pth'
+work_dir = './work_dirs/my_city'
 gpu_ids = range(0, 1)
 auto_resume = False

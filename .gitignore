@@ -131,3 +131,5 @@ setr/
 swin/
 segmentation/data
 segmentation/demo
+segmentation/pretrained/
+*.pth
