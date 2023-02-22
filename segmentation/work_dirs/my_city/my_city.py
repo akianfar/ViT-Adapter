@@ -1,6 +1,6 @@
-num_things_classes = 8
-num_stuff_classes = 11
-num_classes = 19
+num_things_classes = 0
+num_stuff_classes = 16
+num_classes = 16
 norm_cfg = dict(type='SyncBN', requires_grad=True)
 model = dict(
     type='EncoderDecoderMask2FormerAug',
@@ -31,8 +31,8 @@ model = dict(
         feat_channels=1024,
         out_channels=1024,
         in_index=[0, 1, 2, 3],
-        num_things_classes=8,
-        num_stuff_classes=11,
+        num_things_classes=0,
+        num_stuff_classes=16,
         num_queries=100,
         num_transformer_feat_level=3,
         pixel_decoder=dict(
@@ -106,7 +106,7 @@ model = dict(
             reduction='mean',
             class_weight=[
                 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.1
+                1.0, 1.0, 1.0, 1.0, 0.1
             ]),
         loss_mask=dict(
             type='CrossEntropyLoss',
@@ -279,7 +279,7 @@ log_config = dict(
     interval=50, hooks=[dict(type='TextLoggerHook', by_epoch=False)])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-load_from = 'pretrained/mask2former_beit_adapter_large_896_80k_cityscapes.pth.tar'
+load_from = 'work_dirs/my_city/latest.pth'
 resume_from = None
 workflow = [('train', 1)]
 cudnn_benchmark = True
@@ -300,8 +300,9 @@ lr_config = dict(
     min_lr=0.0,
     by_epoch=False)
 runner = dict(type='IterBasedRunner', max_iters=80000)
-checkpoint_config = dict(by_epoch=False, interval=50, max_keep_ckpts=1)
-evaluation = dict(interval=50, metric='mIoU', pre_eval=True, save_best='mIoU')
+checkpoint_config = dict(by_epoch=False, interval=1000, max_keep_ckpts=1)
+evaluation = dict(
+    interval=10000, metric='mIoU', pre_eval=True, save_best='mIoU')
 pretrained = 'pretrained/beit_large_patch16_224_pt22k_ft22k.pth'
 work_dir = './work_dirs/my_city'
 gpu_ids = range(0, 1)

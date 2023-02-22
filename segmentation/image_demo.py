@@ -23,7 +23,7 @@ def main():
         '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument(
         '--palette',
-        default='cityscapes',
+        default='my',
         help='Color palette used for segmentation map')
     parser.add_argument(
         '--opacity',

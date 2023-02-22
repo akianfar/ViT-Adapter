@@ -1,6 +1,6 @@
 # Copyright (c) Shanghai AI Lab. All rights reserved.
 _base_ = [
-    '../_base_/models/mask2former_beit_cityscapes.py',
+    '../_base_/models/my.py',
     '../_base_/datasets/my.py',
     '../_base_/default_runtime.py',
     '../_base_/schedules/schedule_80k.py'
@@ -149,5 +149,5 @@ data = dict(samples_per_gpu=2,
             test=dict(pipeline=test_pipeline),
             val=dict(pipeline=test_pipeline))
 runner = dict(type='IterBasedRunner')
-checkpoint_config = dict(by_epoch=False, interval=50, max_keep_ckpts=1)
-evaluation = dict(interval=50, metric='mIoU', save_best='mIoU')
+checkpoint_config = dict(by_epoch=False, interval=1000, max_keep_ckpts=1)
+evaluation = dict(interval=10000, metric='mIoU', save_best='mIoU')
