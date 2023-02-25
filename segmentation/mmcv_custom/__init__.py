@@ -1,3 +1,6 @@
+import sys
+sys.path.append(r'segmentation/mmcv_custom')
+sys.path.append(r'segmentation/mmseg_custom')
 # Copyright (c) Shanghai AI Lab. All rights reserved.
 from .checkpoint import load_checkpoint
 from .customized_text import CustomizedTextLoggerHook
