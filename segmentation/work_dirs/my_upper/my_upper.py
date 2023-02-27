@@ -55,9 +55,9 @@ model = dict(
     train_cfg=dict(),
     test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(341, 341)))
 dataset_type = 'MyDataset'
-data_root = '/mnt/c/Users/24871/OneDrive/Desktop/ViT-Adapter/segmentation/data'
+data_root = '/root/autodl-tmp/data'
 img_norm_cfg = dict(
-    mean=[127.5, 127.5, 127.5], std=[127.5, 127.5, 127.5], to_rgb=True)
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 crop_size = (512, 512)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
@@ -68,8 +68,8 @@ train_pipeline = [
     dict(type='PhotoMetricDistortion'),
     dict(
         type='Normalize',
-        mean=[127.5, 127.5, 127.5],
-        std=[127.5, 127.5, 127.5],
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
         to_rgb=True),
     dict(type='Pad', size=(512, 512), pad_val=0, seg_pad_val=255),
     dict(type='DefaultFormatBundle'),
@@ -88,8 +88,8 @@ test_pipeline = [
             dict(type='RandomFlip'),
             dict(
                 type='Normalize',
-                mean=[127.5, 127.5, 127.5],
-                std=[127.5, 127.5, 127.5],
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
                 to_rgb=True),
             dict(type='ImageToTensor', keys=['img']),
             dict(type='Collect', keys=['img'])
@@ -100,8 +100,7 @@ data = dict(
     workers_per_gpu=1,
     train=dict(
         type='MyDataset',
-        data_root=
-        '/mnt/c/Users/24871/OneDrive/Desktop/ViT-Adapter/segmentation/data',
+        data_root='/root/autodl-tmp/data',
         img_dir='images/train',
         ann_dir='annotations/train',
         pipeline=[
@@ -113,8 +112,8 @@ data = dict(
             dict(type='PhotoMetricDistortion'),
             dict(
                 type='Normalize',
-                mean=[127.5, 127.5, 127.5],
-                std=[127.5, 127.5, 127.5],
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
                 to_rgb=True),
             dict(type='Pad', size=(512, 512), pad_val=0, seg_pad_val=255),
             dict(type='DefaultFormatBundle'),
@@ -122,8 +121,7 @@ data = dict(
         ]),
     val=dict(
         type='MyDataset',
-        data_root=
-        '/mnt/c/Users/24871/OneDrive/Desktop/ViT-Adapter/segmentation/data',
+        data_root='/root/autodl-tmp/data',
         img_dir='images/val',
         ann_dir='annotations/val',
         pipeline=[
@@ -139,8 +137,8 @@ data = dict(
                     dict(type='RandomFlip'),
                     dict(
                         type='Normalize',
-                        mean=[127.5, 127.5, 127.5],
-                        std=[127.5, 127.5, 127.5],
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
                         to_rgb=True),
                     dict(type='ImageToTensor', keys=['img']),
                     dict(type='Collect', keys=['img'])
@@ -148,8 +146,7 @@ data = dict(
         ]),
     test=dict(
         type='MyDataset',
-        data_root=
-        '/mnt/c/Users/24871/OneDrive/Desktop/ViT-Adapter/segmentation/data',
+        data_root='/root/autodl-tmp/data',
         img_dir='images/val',
         ann_dir='annotations/val',
         pipeline=[
@@ -165,8 +162,8 @@ data = dict(
                     dict(type='RandomFlip'),
                     dict(
                         type='Normalize',
-                        mean=[127.5, 127.5, 127.5],
-                        std=[127.5, 127.5, 127.5],
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
                         to_rgb=True),
                     dict(type='ImageToTensor', keys=['img']),
                     dict(type='Collect', keys=['img'])

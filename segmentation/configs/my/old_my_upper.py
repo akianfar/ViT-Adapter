@@ -31,7 +31,7 @@ model = dict(
     test_cfg = dict(mode='slide', crop_size=(512, 512), stride=(341, 341))
 )
 img_norm_cfg = dict(
-    mean=[127.5, 127.5, 127.5], std=[127.5, 127.5, 127.5], to_rgb=True)
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 crop_size = (512, 512)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
