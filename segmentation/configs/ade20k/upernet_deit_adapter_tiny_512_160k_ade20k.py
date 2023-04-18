@@ -3,8 +3,8 @@ _base_ = [
     '../_base_/models/upernet_r50.py', '../_base_/datasets/ade20k.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
-# pretrained = 'https://dl.fbaipublicfiles.com/deit/deit_tiny_patch16_224-a1311bcf.pth'
-pretrained = 'pretrained/deit_tiny_patch16_224-a1311bcf.pth'
+pretrained = 'https://dl.fbaipublicfiles.com/deit/deit_tiny_patch16_224-a1311bcf.pth'
+#pretrained = 'pretrained/deit_tiny_patch16_224-a1311bcf.pth'
 model = dict(
     pretrained=pretrained,
     backbone=dict(
@@ -24,8 +24,8 @@ model = dict(
         interaction_indexes=[[0, 2], [3, 5], [6, 8], [9, 11]],
         window_attn=[False] * 12,
         window_size=[None] * 12),
-    decode_head=dict(num_classes=150, in_channels=[192, 192, 192, 192]),
-    auxiliary_head=dict(num_classes=150, in_channels=192),
+    decode_head=dict(num_classes=2, in_channels=[192, 192, 192, 192]),
+    auxiliary_head=dict(num_classes=2, in_channels=192),
     test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(341, 341))
 )
 img_norm_cfg = dict(
