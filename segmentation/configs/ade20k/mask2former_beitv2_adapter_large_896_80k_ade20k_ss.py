@@ -6,11 +6,11 @@ _base_ = [
     '../_base_/schedules/schedule_80k.py'
 ]
 crop_size = (896, 896)
-# pretrained = 'https://conversationhub.blob.core.windows.net/beit-share-public/beitv2/beitv2_large_patch16_224_pt1k_ft21k.pth'
-pretrained = 'pretrained/beitv2_large_patch16_224_pt1k_ft21k.pth'
+pretrained = 'https://conversationhub.blob.core.windows.net/beit-share-public/beitv2/beitv2_large_patch16_224_pt1k_ft21k.pth'
+#pretrained = 'pretrained/beitv2_large_patch16_224_pt1k_ft21k.pth'
 # please download the coco-stuff pre-trained model
-# load_from = 'https://github.com/czczup/ViT-Adapter/releases/download/v0.3.1/mask2former_beitv2_adapter_large_896_80k_cocostuff164k.zip'
-load_from = 'pretrained/mask2former_beitv2_adapter_large_896_80k_cocostuff164k.pth'
+load_from = 'https://github.com/czczup/ViT-Adapter/releases/download/v0.3.1/mask2former_beitv2_adapter_large_896_80k_cocostuff164k.zip'
+#load_from = 'pretrained/mask2former_beitv2_adapter_large_896_80k_cocostuff164k.pth'
 model = dict(
     type='EncoderDecoderMask2Former',
     pretrained=pretrained,
